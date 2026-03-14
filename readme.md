@@ -25,55 +25,102 @@ Dataset is already downloaded and loaded in the notebook. Preprocess as needed f
 - unfreeze last layers  
 - retrain full or partial base  
 
-You can enhance fine-tuning with these techniques:
+## Experiment Summary
 
-- **Unfreeze only last *n* layers**  
-  gradually increase trainable layers instead of full base model
+In this project, I applied **Transfer Learning** using **EfficientNetB0** to classify images from the Food11 dataset using two main approaches:
 
-- **Gradual unfreezing**  
-  unfreeze layers one block at a time across training epochs
+### Feature Extraction
+I froze all EfficientNet base layers and trained only the classification head. This resulted in fast training, stable convergence, and the best performance.
 
-- **Layer-wise learning rate decay**  
-  assign smaller LR to earlier layers and higher LR to deeper layers
+**Test Accuracy:** 90.23%
 
-For each:
-- document model version  
-- include training/validation metrics  
-- write your analysis
+### Fine Tuning
+I unfroze the last layers of EfficientNet and retrained them using a smaller learning rate to allow the model to adapt deeper features.
 
+**Test Accuracy:** 86.70%
 
+I also experimented with gradual unfreezing to improve training stability.
 
-## 🧬 Bonus (Optional)
+---
 
-- use **DagsHub** to upload and manage dataset in a cloud bucket  
-- track all runs using **MLflow**:
-  - versioned experiments  
-  - parameters, metrics, artifacts  
+## Plots for Metrics
 
-## 📝 README Must Include:
+![alt text](image.png)
+![alt text](image-1.png)
 
-- experiment summary  
-- plots for metrics  
-- observations on:
-  - feature extract vs fine-tune  
-  - generalization, convergence, overfitting 
+I analyzed the training behavior using:
 
-## 🔗 Helpful Links
+- Training vs Validation Accuracy
+- Training vs Validation Loss
+- Model comparison plots
 
-- 📚 EfficientNet models in Keras:  
-  https://keras.io/api/applications/efficientnet/
+Feature extraction showed smoother curves and more stable validation performance compared to fine tuning.
 
-- 🎓 Transfer Learning guide (Keras):  
-  https://keras.io/guides/transfer_learning/
+---
 
-- 📦 MLflow for experiment tracking:  
-  https://www.mlflow.org/docs/latest/index.html
+## Observations
 
-- ☁️ DVC + DagsHub integration:  
-  https://dagshub.com/docs/integrations/dvc/
+### Feature Extraction vs Fine Tuning
 
-- 🧑‍🍳 How to freeze/unfreeze layers in Keras:  
-  https://keras.io/getting_started/faq/#how-can-i-freeze-layers-in-a-model
+Feature extraction performed better in this task because pretrained ImageNet features were already strong and required less retraining.
 
-- 📈 Using callbacks in Keras (e.g. EarlyStopping, ReduceLROnPlateau):  
-  https://keras.io/api/callbacks/
+Fine tuning allowed more flexibility but increased the risk of overfitting 
+
+---
+
+### Generalization
+
+Feature extraction showed better generalization because the training and validation curves remained close and stable.
+
+Fine tuning showed slightly more fluctuation in validation performance.
+
+---
+
+### Convergence
+
+Feature extraction converged faster and showed stable learning behavior.
+
+Fine tuning required more careful tuning and converged more slowly due to the lower learning rate.
+
+---
+
+### Overfitting
+
+Feature extraction showed low overfitting risk.
+
+Fine tuning showed mild overfitting signs due to the increased number of trainable parameters.
+
+---
+
+## Experiment Tracking
+
+I used **MLflow** to track:
+
+- Model parameters
+- Training metrics
+- Model versions
+- Training artifacts
+
+This helped me compare experiments and improve reproducibility.
+
+---
+
+## DagsHub Integration
+
+I used **DagsHub** to:
+
+- Manage the dataset in cloud storage
+- Track MLflow experiment runs
+- Store model experiments
+
+This helped improve experiment organization and reproducibility.
+
+---
+
+## Conclusion
+
+Feature extraction achieved the best performance with **90.23% accuracy** and better generalization compared to fine tuning.
+
+Transfer learning significantly reduced training time and allowed me to achieve strong results without training a model from scratch.
+
+EfficientNet proved to be very effective for this image classification task.
